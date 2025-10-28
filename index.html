@@ -1,1607 +1,619 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planetaire - HYBRID MASTER 51</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #080b12;
-      --card: #0d111a;
-      --card-2: #121824;
-      --accent: #F59E0B;
-      --accent-2: #ff8a00;
-      --secondary: #0EA5E9;
-      --secondary-2: #2563EB;
-      --muted: #8b92a8;
-      --success: #10b981;
-      --danger: #FF3B30;
-      --glass: rgba(255,255,255,0.04);
-      --glass-2: rgba(255,255,255,0.02);
-      --neon: rgba(245,158,11,0.18);
-    }
-    
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html, body {
-      height: 100%;
-      background: linear-gradient(180deg, #06070a 0%, #080b12 100%);
-      color: #fff;
-      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.5;
-    }
-    
-    .container {
-      max-width: 1100px;
-      margin: 18px auto;
-      padding: 18px;
-    }
-    
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    
-    .logo {
-      font-size: 40px;
-    }
-    
-    .title {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    
-    .row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-    }
-    
-    .left {
-      flex: 1;
-    }
-    
-    .right {
-      width: 360px;
-    }
-    
-    .programs {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 14px;
-      margin-top: 18px;
-    }
-    
-    .session-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .session-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border: none;
-      padding: 16px;
-      border-radius: 12px;
-      color: #071021;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 8px 24px rgba(245,158,11,0.12);
-      text-align: left;
-      transition: all 0.25s ease;
-    }
-    
-    .session-btn:hover {
-      transform: scale(1.03);
-      box-shadow: 0 10px 28px rgba(255, 160, 0, 0.45);
-    }
-    
-    .small {
-      font-size: 13px;
-      color: var(--muted);
-    }
-    
-    .dashboard-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    
-    .btn {
-      background: var(--card-2);
-      border: 1px solid rgba(255,255,255,0.03);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    
-    .btn.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #071021;
-      font-weight: 700;
-      border: none;
-    }
-    
-    .week-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 16px;
-      border-radius: 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      border: 1px solid rgba(255,255,255,0.03);
-    }
-    
-    .exercise-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    
-    .exercise-card {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.03);
-      background: linear-gradient(180deg, var(--card), var(--card-2));
-    }
-    
-    .exercise-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px;
-      cursor: pointer;
-    }
-    
-    .exercise-name {
-      font-weight: 800;
-      color: var(--accent);
-    }
-    
-    .exercise-meta {
-      color: var(--muted);
-      font-size: 13px;
-    }
-    
-    .exercise-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s;
-      padding: 0 14px;
-      background: rgba(255,255,255,0.01);
-    }
-    
-    .exercise-details.open {
-      max-height: 1200px;
-      padding: 14px;
-    }
-    
-    .set-row {
-      display: grid;
-      grid-template-columns: 50px 1fr 1fr 44px;
-      gap: 6px;
-      padding: 6px;
-      background: var(--glass);
-      border-radius: 10px;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    
-    .set-input {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: 600;
-      text-align: center;
-      font-size: 14px;
-      transition: all 0.25s;
-      height: 42px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .set-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 10px rgba(255,138,0,0.4), inset 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .set-checkbox {
-      display: none;
-    }
-    
-    .set-checkbox+label {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background: var(--card-2);
-      font-size: 12px;
-      transition: all 0.2s ease;
-    }
-    
-    .set-checkbox:checked+label {
-      background: var(--success);
-      border-color: var(--success);
-      transform: scale(1.08);
-    }
-    
-    .technique-banner {
-      background: linear-gradient(135deg, var(--neon), rgba(251,191,36,0.08));
-      border: 1px solid rgba(245,158,11,0.2);
-      padding: 10px;
-      border-radius: 10px;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .rest-timer {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 18px;
-      background: var(--card);
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.04);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 999;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-    }
-    
-    .timer-circle {
-      width: 72px;
-      height: 72px;
-      position: relative;
-    }
-    
-    .timer-text {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: var(--accent);
-    }
-    
-    .timer-skip {
-      background: transparent;
-      border: 2px solid rgba(239,68,68,0.25);
-      color: var(--danger);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .timer-skip:hover {
-      background: rgba(239,68,68,0.1);
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 1200;
-    }
-    
-    .modal.active {
-      display: flex;
-    }
-    
-    .modal .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-    }
-    
-    .modal .content {
-      position: relative;
-      background: rgba(13,17,26,0.95);
-      padding: 18px;
-      border-radius: 16px;
-      max-width: 940px;
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.06);
-      max-height: 80vh;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      backdrop-filter: blur(14px) saturate(160%);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.65);
-    }
-    
-    .close-x {
-      position: absolute;
-      right: 12px;
-      top: 12px;
-      cursor: pointer;
-      color: var(--accent);
-      font-size: 18px;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: background 0.2s ease;
-    }
-    
-    .close-x:hover {
-      background: rgba(255,255,255,0.05);
-    }
-
-    .chart-container {
-      background: rgba(15,20,30,0.85);
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
-      color: #fff;
-    }
-
-    .chart-title {
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-    
-    .chart-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .charts {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
-    }
-    
-    .footer {
-      margin-top: 30px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    .heatmap {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-top: 8px;
-    }
-    
-    .heat-cell {
-      background: rgba(255,255,255,0.02);
-      height: 40px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    
-    .heat-cell.c1 { background: rgba(255,120,0,0.06); }
-    .heat-cell.c2 { background: rgba(255,120,0,0.12); }
-    .heat-cell.c3 { background: rgba(255,120,0,0.22); }
-    .heat-cell.c4 { background: rgba(255,120,0,0.34); }
-    
-    .heat-legend {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      margin-top: 8px;
-    }
-    
-    .legend-pill {
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.02);
-      font-size: 12px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .muscle-tag {
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    
-    .exercise-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    
-    .btn.ios {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #0b0f17;
-      border: none;
-      font-weight: 700;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 16px rgba(255, 138, 0, 0.35);
-      border-radius: 12px;
-    }
-    
-    .btn.ios:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(255, 138, 0, 0.5);
-    }
-    
-    .btn.ios.primary {
-      background: linear-gradient(135deg, var(--secondary), var(--secondary-2));
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(14,165,233,0.3);
-    }
-    
-    .btn.ios.danger {
-      background: linear-gradient(135deg, #FF3B30, #FF2D55);
-      color: white;
-      box-shadow: 0 4px 16px rgba(255, 59, 48, 0.3);
-    }
-
-    .session-btn.ios {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: white;
-      font-weight: 700;
-      border: none;
-      box-shadow: 0 4px 20px rgba(245,158,11,0.3);
-      transition: all 0.25s ease;
-    }
-    
-    .session-btn.ios:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(255, 138, 0, 0.5);
-    }
-
-    #heatmapPremium {
-      margin-top: 18px;
-      background: rgba(10,14,22,0.55);
-      backdrop-filter: blur(18px) saturate(180%);
-      border-radius: 20px;
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-    }
-    
-    #heatmapPremium .title {
-      font-weight: 900;
-      color: var(--accent, #F59E0B);
-      margin-bottom: 12px;
-      text-shadow: 0 0 12px rgba(255,160,30,0.4);
-      font-size: 18px;
-    }
-    
-    .hm-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    
-    .weekNav button {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 8px 12px;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: 600;
-      backdrop-filter: blur(8px);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .weekNav button:hover {
-      background: rgba(255,255,255,0.18);
-      transform: translateY(-2px);
-    }
-    
-    .legendPill {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #bfc9d9;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
-
-    .weekCol {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: center;
-      min-width: 86px;
-    }
-    
-    .weekLabel {
-      font-size: 13px;
-      color: #8a97b5;
-      margin-bottom: 4px;
-    }
-
-    .dayCell {
-      width: 72px;
-      height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
-    }
-    
-    .dayCell:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 16px rgba(255,255,255,0.12);
-    }
-
-    .c-none { background: rgba(20,24,32,0.8); color: #777; }
-    .c-low  { background: linear-gradient(135deg, #1e293b, #334155); box-shadow: inset 0 0 10px rgba(88,168,255,0.3); }
-    .c-mid  { background: linear-gradient(135deg, #0ea5e9, #2563eb); box-shadow: inset 0 0 15px rgba(59,130,246,0.4); }
-    .c-high { background: linear-gradient(135deg, #f59e0b, #f97316); color: #000; box-shadow: 0 0 18px rgba(245,158,11,0.6); }
-    .c-max  { background: linear-gradient(135deg, #ef4444, #f59e0b); color: #000; box-shadow: 0 0 22px rgba(239,68,68,0.6); }
-
-    .hm-small {
-      font-size: 11px;
-      color: rgba(255,255,255,0.8);
-      margin-top: 3px;
-    }
-    
-    .hm-tooltip {
-      position: absolute;
-      z-index: 9999;
-      background: rgba(10,12,17,0.92);
-      color: #fff;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      pointer-events: none;
-      transform: translate(-50%, -110%);
-      white-space: nowrap;
-    }
-
-    .view-toggle-container {
-      display: flex;
-      justify-content: center;
-      margin: 12px 0;
-    }
-
-    #viewToggle {
-      background: linear-gradient(135deg, var(--secondary), var(--secondary-2));
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(14,165,233,0.3);
-      transition: all 0.25s ease;
-    }
-
-    #viewToggle:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(14,165,233,0.4);
-    }
-
-    .set-input::placeholder {
-      color: rgba(255,255,255,0.3);
-      font-weight: 500;
-    }
-
-    .input-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .input-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    /* Volume grid */
-    .volume-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    
-    .volume-item {
-      padding: 10px;
-      background: var(--card-2);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    /* === RESPONSIVE DESIGN === */
-    @media (max-width: 980px) {
-      .programs {
-        grid-template-columns: 1fr;
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planetaire - HYBRID MASTER 51</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #06070a 0%, #080b12 100%);
       }
-      
-      .right {
-        width: 100%;
+      /* Custom scrollbar for webkit browsers */
+      ::-webkit-scrollbar {
+        width: 8px;
       }
-      
-      .charts {
-        grid-template-columns: 1fr;
+      ::-webkit-scrollbar-track {
+        background: #0d111a;
       }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
+      ::-webkit-scrollbar-thumb {
+        background: #f59e0b;
+        border-radius: 4px;
       }
-      
-      .volume-grid {
-        grid-template-columns: 1fr;
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ff8a00;
       }
-    }
-
-    @media (max-width: 720px) {
-      .chart-container {
-        padding: 10px;
-      }
-      
-      .dayCell {
-        width: 60px;
-        height: 44px;
-        font-size: 12px;
-      }
-      
-      .weekCol {
-        min-width: 70px;
-      }
-    }
-
-    @media (max-width: 430px) {
-      .container {
-        padding: 12px;
-        margin: 12px auto;
-      }
-      
-      .programs {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      
-      .set-row {
-        grid-template-columns: 45px 1fr 1fr 40px;
-        gap: 4px;
-        padding: 4px;
-      }
-      
-      .set-input {
-        padding: 4px;
-        font-size: 12px;
-      }
-      
-      .set-checkbox+label {
-        width: 32px;
-        height: 32px;
-        font-size: 11px;
-      }
-      
-      .exercise-header {
-        padding: 12px;
-      }
-      
-      .exercise-details.open {
-        padding: 12px;
-      }
-      
-      .session-btn {
-        padding: 14px;
-      }
-      
-      .btn {
-        padding: 8px 10px;
-        font-size: 13px;
-      }
-      
-      .dashboard-actions {
-        gap: 6px;
-      }
-      
-      .charts {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* === ACCESSIBILITY & SAFE AREAS === */
-    @supports (padding: max(0px)) {
-      .container {
-        padding-left: max(12px, env(safe-area-inset-left));
-        padding-right: max(12px, env(safe-area-inset-right));
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
-      }
-    }
-
-    @supports (-webkit-touch-callout: none) {
-      .exercise-details {
-        overflow-y: visible !important;
-      }
-      
-      .set-row {
-        overflow: visible !important;
-      }
-      
-      input.set-checkbox + label {
-        min-width: 40px;
-        min-height: 40px;
-      }
-    }
-
-    /* === ANIMATIONS & TRANSITIONS === */
-    * {
-      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    }
-  </style>
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
 </head>
+  <body class="bg-[#080b12] text-white">
+    <div id="root"></div>
+    <script type="module">
+// --- BUNDLED SCRIPT START ---
 
-<body>
-  <div class="container">
-    <div class="header row">
-      <div class="logo">🏆</div>
-      <div>
-        <div class="title">HYBRID MASTER 51 — Ultimate V6</div>
-        <div class="small">26 semaines · 3 séances / semaine · Analyse & Heatmap</div>
-      </div>
-      <button class="btn ios" onclick="openDayExerciseManager()">🧩 Gérer les exercices</button>
-    </div>
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
-    <div class="programs">
-      <div class="left">
-        <div class="week-card card row">
-          <div>
-            <div style="font-weight:800">Semaine <span id="weekDisplay">1</span></div>
-            <div class="small" id="blockName">Bloc</div>
-          </div>
-          <div class="row">
-            <button id="prevWeek" class="btn ios">← Préc.</button>
-            <button id="nextWeek" class="btn ios primary">Suiv. →</button>
-          </div>
-        </div>
+// --- From constants.ts ---
+const MUSCLE_MAPPING = {
+  "Trap Bar Deadlift": { primary:["Ischios","Fessiers","Dos"], secondary:["Quadriceps","Abdominaux"], tertiary:["Mollets","Avant-bras"] },
+  "Goblet Squat": { primary:["Quadriceps","Fessiers"], secondary:["Ischios","Abdominaux"], tertiary:["Mollets"] },
+  "Leg Press": { primary:["Quadriceps","Ischios"], secondary:["Fessiers"], tertiary:["Mollets"] },
+  "Lat Pulldown": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
+  "Landmine Press": { primary:["Épaules","Triceps"], secondary:["Pectoraux"], tertiary:[] },
+  "Rowing Machine": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
+  "Spider Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Incline Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Spider Curl / Incline Curl*": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Cable Pushdown": { primary:["Triceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Dumbbell Press": { primary:["Pectoraux"], secondary:["Triceps","Épaules"], tertiary:[] },
+  "Cable Fly": { primary:["Pectoraux"], secondary:[], tertiary:[] },
+  "Leg Press léger": { primary:["Quadriceps"], secondary:["Ischios","Fessiers"], tertiary:["Mollets"] },
+  "Extension Triceps Corde": { primary:["Triceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Lateral Raises": { primary:["Épaules latérales"], secondary:["Trapèzes"], tertiary:[] },
+  "Face Pull": { primary:["Épaules postérieures","Trapèzes"], secondary:["Dos"], tertiary:[] },
+  "Overhead Extension": { primary:["Triceps longs"], secondary:[], tertiary:[] },
+  "Landmine Row": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
+  "Leg Curl": { primary:["Ischios"], secondary:["Fessiers"], tertiary:["Mollets"] },
+  "Leg Extension": { primary:["Quadriceps"], secondary:[], tertiary:[] },
+  "Dumbbell Fly": { primary:["Pectoraux"], secondary:["Épaules"], tertiary:[] },
+  "EZ Bar Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
+  "Wrist Curl": { primary:["Avant-bras"], secondary:[], tertiary:[] },
+  "Hammer Curl": { primary:["Biceps","Avant-bras"], secondary:[], tertiary:[] }
+};
+const PROGRAM = {
+  dimanche: {
+    key:'dimanche', 
+    title: "Dimanche - Dos + Jambes Lourdes + Bras (68 min)",
+    exercises:[
+      { name:"Trap Bar Deadlift", sets:5, reps:"6-8", rest:120, weight:75, type:"barre", tech:"RPE 6-8" },
+      { name:"Goblet Squat", sets:4, reps:"10", rest:75, weight:25, type:"haltères", tech:"Tempo 3-1-2" },
+      { name:"Leg Press", sets:4, reps:"10", rest:75, weight:110, type:"machine", tech:"Drop-set dernière série" },
+      { name:"Lat Pulldown", sets:4, reps:"10", rest:90, weight:60, type:"machine", tech:"Myo-reps" },
+      { name:"Landmine Press", sets:4, reps:"10", rest:90, weight:35, type:"barre", tech:"Tempo 2-1-2" },
+      { name:"Rowing Machine", sets:4, reps:"10", rest:75, weight:50, type:"machine", tech:"Tempo 2-1-2" },
+      { name:"Spider Curl / Incline Curl*", sets:4, reps:"12", rest:75, weight:12, type:"haltères", tech:"Rest-pause" },
+      { name:"Cable Pushdown", sets:3, reps:"12", rest:75, weight:20, type:"machine", tech:"Rest-pause" }
+    ]
+  },
+  mardi: {
+    key:'mardi', 
+    title:"Mardi - Pecs + Épaules + Triceps (70 min)",
+    exercises:[
+      { name:"Dumbbell Press", sets:5, reps:"10", rest:105, weight:22, type:"haltères", tech:"Cluster sets" },
+      { name:"Cable Fly", sets:4, reps:"12", rest:60, weight:10, type:"machine", tech:"Tension continue" },
+      { name:"Leg Press léger", sets:3, reps:"15", rest:60, weight:80, type:"machine", tech:"Standard" },
+      { name:"Extension Triceps Corde", sets:5, reps:"12", rest:75, weight:20, type:"machine", tech:"Drop-set" },
+      { name:"Lateral Raises", sets:5, reps:"15", rest:75, weight:8, type:"haltères", tech:"Myo-reps" },
+      { name:"Face Pull", sets:5, reps:"15", rest:60, weight:20, type:"machine", tech:"Tempo 3-1-2" },
+      { name:"Rowing Machine", sets:4, reps:"12", rest:75, weight:50, type:"machine", tech:"Tempo 2-1-2" },
+      { name:"Overhead Extension", sets:4, reps:"12", rest:60, weight:15, type:"machine", tech:"Rest-pause" }
+    ]
+  },
+  vendredi: {
+    key:'vendredi', 
+    title:"Vendredi - Dos + Jambes + Bras + Épaules (73 min)",
+    exercises:[
+      { name:"Landmine Row", sets:5, reps:"10", rest:105, weight:55, type:"barre", tech:"Tempo 2-1-2" },
+      { name:"Leg Curl", sets:5, reps:"12", rest:75, weight:40, type:"machine", tech:"Drop-set dernière série" },
+      { name:"Leg Extension", sets:4, reps:"15", rest:75, weight:35, type:"machine", tech:"Standard" },
+      { name:"Cable Fly", sets:4, reps:"15", rest:60, weight:10, type:"machine", tech:"Tension continue" },
+      { name:"Dumbbell Fly", sets:4, reps:"12", rest:75, weight:10, type:"haltères", tech:"Tempo 3-1-2" },
+      { name:"EZ Bar Curl", sets:5, reps:"12", rest:75, weight:25, type:"barre", tech:"Rest-pause" },
+      { name:"Overhead Extension", sets:3, reps:"12", rest:75, weight:15, type:"machine", tech:"Rest-pause" },
+      { name:"Lateral Raises", sets:3, reps:"15", rest:60, weight:8, type:"haltères", tech:"Myo-reps" },
+      { name:"Wrist Curl", sets:3, reps:"20", rest:45, weight:30, type:"barre", tech:"Standard" }
+    ]
+  }
+};
+const STATE_KEY = 'hm51_v_full_v6_react';
 
-        <div class="view-toggle-container">
-          <button id="viewToggle" class="btn ios">🌀 Vue Exercices</button>
-        </div>
+// --- From components/Icons.tsx ---
+const TrophyIcon = () => React.createElement("span", { className: "text-4xl" }, "🏆");
+const SettingsIcon = () => React.createElement("span", { className: "text-lg" }, "🧩");
+const ChartIcon = () => React.createElement("span", { className: "text-lg" }, "📊");
+const HistoryIcon = () => React.createElement("span", { className: "text-lg" }, "📈");
+const VolumeIcon = () => React.createElement("span", { className: "text-lg" }, "📈");
+const MuscleIcon = () => React.createElement("span", { className: "text-lg" }, "💪");
+const ExportIcon = () => React.createElement("span", { className: "text-lg" }, "💾");
+const BackupIcon = () => React.createElement("span", { className: "text-lg" }, "☁️");
+const ResetIcon = () => React.createElement("span", { className: "text-lg" }, "⚠️");
+const AddIcon = () => React.createElement("span", { className: "text-lg" }, "➕");
+const ViewIcon = () => React.createElement("span", { className: "text-lg" }, "👁");
+const ManageIcon = () => React.createElement("span", { className: "text-lg" }, "📅");
+const CreateIndependentIcon = () => React.createElement("span", { className: "text-lg" }, "🌟");
+const ChevronDownIcon = () => React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 text-slate-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" }));
+const ChevronUpIcon = () => React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 text-slate-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 15l7-7 7 7" }));
+const CloseIcon = () => React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }));
+const SkipIcon = () => React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }));
 
-        <div class="card" style="margin-top:12px">
-          <div class="row" style="justify-content:space-between;align-items:center">
-            <div style="font-weight:800">Séances disponibles</div>
-            <div class="small">Tap pour ouvrir</div>
-          </div>
-          <div class="session-list" id="progList" style="margin-top:12px"></div>
-        </div>
+// --- From components/Modal.tsx ---
+const Modal = ({ isOpen, onClose, children, title }) => {
+  if (!isOpen) return null;
+  return React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4", "aria-modal": "true" },
+    React.createElement("div", { className: "absolute inset-0 bg-black/70 backdrop-blur-sm", onClick: onClose }),
+    React.createElement("div", { className: "relative z-10 bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col" },
+      React.createElement("header", { className: "flex items-center justify-between p-4 border-b border-white/10" },
+        React.createElement("h2", { className: "text-xl font-bold text-amber-400" }, title),
+        React.createElement("button", { onClick: onClose, className: "p-1 rounded-full hover:bg-white/10 text-amber-400 transition-colors" }, React.createElement(CloseIcon, null))
+      ),
+      React.createElement("div", { className: "p-6 overflow-y-auto" }, children)
+    )
+  );
+};
 
-        <div class="exercise-list" id="exerciseArea" style="margin-top:14px"></div>
-      </div>
+// --- From components/RestTimer.tsx ---
+const RestTimer = ({ duration, nextExercise, onSkip, onFinish }) => {
+  const [remaining, setRemaining] = useState(duration);
+  useEffect(() => {
+    if (remaining <= 0) {
+      onFinish();
+      return;
+    }
+    const timer = setInterval(() => {
+      setRemaining(prev => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [remaining, onFinish]);
+  const radius = 34;
+  const circumference = 2 * Math.PI * radius;
+  const progress = (remaining / duration) * circumference;
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
+  return React.createElement("div", { className: "fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-slate-900/80 backdrop-blur-lg border border-white/10 p-3 rounded-2xl shadow-2xl" },
+    React.createElement("div", { className: "relative w-16 h-16" },
+      React.createElement("svg", { className: "w-full h-full", viewBox: "0 0 80 80" },
+        React.createElement("circle", { cx: "40", cy: "40", r: radius, stroke: "rgba(255,255,255,0.1)", strokeWidth: "6", fill: "none" }),
+        React.createElement("circle", { cx: "40", cy: "40", r: radius, stroke: "url(#g1)", strokeWidth: "6", fill: "none", strokeLinecap: "round", className: "transform -rotate-90 origin-center transition-all duration-1000 linear", style: { strokeDasharray: circumference, strokeDashoffset: circumference - progress } }),
+        React.createElement("defs", null, React.createElement("linearGradient", { id: "g1" }, React.createElement("stop", { offset: "0", stopColor: "#F59E0B" }), React.createElement("stop", { offset: "1", stopColor: "#ff8a00" })))
+      ),
+      React.createElement("div", { className: "absolute inset-0 flex items-center justify-center font-extrabold text-xl text-amber-400" }, `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`)
+    ),
+    React.createElement("div", null,
+      React.createElement("div", { className: "font-bold text-white" }, nextExercise),
+      React.createElement("div", { className: "text-sm text-slate-400" }, "Temps restant")
+    ),
+    React.createElement("button", { onClick: onSkip, className: "w-11 h-11 flex items-center justify-center rounded-full border-2 border-red-500/30 text-red-500 hover:bg-red-500/20 transition-colors" }, React.createElement(SkipIcon, null))
+  );
+};
 
-      <div class="right">
-        <div class="card">
-          <div style="font-weight:800">Tableau de bord</div>
-          <div class="small" id="quickMsg" style="margin-top:8px">Prêt.</div>
-          <div class="dashboard-actions" style="margin-top:12px;">
-            <button id="openStats" class="btn ios">📊 Statistiques</button>
-            <button id="openStatsHist" class="btn ios">📈 Progression</button>
-            <button id="openVolume" class="btn ios">📈 Volume</button>
-            <button id="openMuscle" class="btn ios">💪 Muscles</button>
-            <button id="exportCSV" class="btn ios">💾 Export</button>
-            <button id="backupBtn" class="btn ios">☁️ Backup</button>
-            <button id="resetApp" class="btn ios" style="color:var(--danger)">⚠️ Reset</button>
-          </div>
-        </div>
+// --- From components/StatsModal.tsx ---
+const computeSessionVolumes = (program, weights) => {
+  const labels = Object.values(program).map(s => s.title.split(' - ')[0]);
+  const volumes = Object.values(program).map(s => {
+    return s.exercises.reduce((acc, ex) => {
+      const reps = typeof ex.reps === 'number' ? ex.reps : parseInt(String(ex.reps).split('-')[0]) || 0;
+      const w = weights[ex.name] || ex.weight || 0;
+      return acc + (w * reps * (ex.sets || 0));
+    }, 0);
+  });
+  return labels.map((label, index) => ({ name: label, volume: volumes[index] }));
+};
+const computeMuscleIntensity = (program, weights) => {
+  const map = {};
+  Object.values(MUSCLE_MAPPING).forEach(m => {
+    [...m.primary, ...m.secondary, ...m.tertiary].forEach(x => { map[x] = 0; });
+  });
+  Object.values(program).forEach(sess => {
+    sess.exercises.forEach(ex => {
+      const mm = MUSCLE_MAPPING[ex.name];
+      if (!mm) return;
+      const weight = weights[ex.name] || ex.weight || 0;
+      const reps = typeof ex.reps === 'number' ? ex.reps : parseInt(String(ex.reps).split('-')[0]) || 0;
+      const vol = weight * reps * (ex.sets || 0);
+      mm.primary.forEach(m => (map[m] = (map[m] || 0) + vol * 1.0));
+      mm.secondary.forEach(m => (map[m] = (map[m] || 0) + vol * 0.6));
+      mm.tertiary.forEach(m => (map[m] = (map[m] || 0) + vol * 0.3));
+    });
+  });
+  return Object.keys(map).map(l => ({ muscle: l, intensite: Math.round(map[l] / 1000) })).filter(item => item.intensite > 0);
+};
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return React.createElement("div", { className: "bg-slate-800/80 p-2 border border-slate-600 rounded-lg text-sm" },
+      React.createElement("p", { className: "label font-bold text-amber-400" }, `${label}`),
+      React.createElement("p", { className: "intro text-white" }, `Volume : ${payload[0].value.toLocaleString()} kg`)
+    );
+  }
+  return null;
+};
+const StatsModalContent = ({ state }) => {
+  const volumeData = computeSessionVolumes(state.program, state.weights);
+  const muscleData = computeMuscleIntensity(state.program, state.weights);
+  return React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+    React.createElement("div", { className: "bg-slate-900/50 border border-white/10 rounded-xl p-4" },
+      React.createElement("h3", { className: "font-bold text-amber-400 mb-2" }, "Volume hebdomadaire par séance"),
+      React.createElement(ResponsiveContainer, { width: "100%", height: 300 },
+        React.createElement(BarChart, { data: volumeData, margin: { top: 5, right: 20, left: -10, bottom: 5 } },
+          React.createElement(XAxis, { dataKey: "name", stroke: "#94a3b8", fontSize: 12, tickLine: false, axisLine: false }),
+          React.createElement(YAxis, { stroke: "#94a3b8", fontSize: 12, tickLine: false, axisLine: false }),
+          React.createElement(Tooltip, { content: React.createElement(CustomTooltip, null), cursor: { fill: 'rgba(245, 158, 11, 0.1)' } }),
+          React.createElement(Bar, { dataKey: "volume", fill: "#f59e0b", radius: [4, 4, 0, 0] })
+        )
+      )
+    ),
+    React.createElement("div", { className: "bg-slate-900/50 border border-white/10 rounded-xl p-4" },
+      React.createElement("h3", { className: "font-bold text-amber-400 mb-2" }, "Répartition musculaire (Intensité)"),
+      React.createElement(ResponsiveContainer, { width: "100%", height: 300 },
+        React.createElement(RadarChart, { cx: "50%", cy: "50%", outerRadius: "80%", data: muscleData },
+          React.createElement(PolarGrid, { stroke: "#475569" }),
+          React.createElement(PolarAngleAxis, { dataKey: "muscle", stroke: "#e2e8f0", fontSize: 12 }),
+          React.createElement(PolarRadiusAxis, { angle: 30, domain: [0, 'dataMax + 10'], stroke: "#94a3b8", fontSize: 10 }),
+          React.createElement(Radar, { name: "Intensité", dataKey: "intensite", stroke: "#f59e0b", fill: "#f59e0b", fillOpacity: 0.6 }),
+          React.createElement(Tooltip, { wrapperClassName: "!bg-slate-800/80 !border-slate-600 !rounded-lg" })
+        )
+      )
+    )
+  );
+};
 
-        <div class="card" style="margin-top:12px">
-          <div style="font-weight:800;margin-bottom:8px">Heatmap de charge (semaine)</div>
-          <div id="heatmapContainer">
-            <div id="heatmap" class="heatmap" aria-hidden="false"></div>
-            <div class="heat-legend">
-              <div class="legend-pill c1" style="background:rgba(255,120,0,0.06)">Faible</div>
-              <div class="legend-pill c2" style="background:rgba(255,120,0,0.12)">Moyen</div>
-              <div class="legend-pill c3" style="background:rgba(255,120,0,0.22)">Haut</div>
-              <div class="legend-pill c4" style="background:rgba(255,120,0,0.34)">Max</div>
-            </div>
-          </div>
-        </div>
+// --- From components/ExerciseCard.tsx ---
+const MuscleTag = ({ muscle, type }) => {
+  const styles = { primary: 'bg-amber-500/20 text-amber-400', secondary: 'bg-sky-500/20 text-sky-400', tertiary: 'bg-violet-500/20 text-violet-400' };
+  return React.createElement("span", { className: `px-2 py-1 text-xs font-semibold rounded-md ${styles[type]}` }, muscle);
+};
+const SetRow = ({ setIndex, setData, onChange, onCheck }) => {
+  const [isChecked, setIsChecked] = useState(false);
+  const id = `set-${setIndex}-${Math.random()}`;
+  return React.createElement("div", { className: "grid grid-cols-[50px_1fr_1fr_44px] gap-2 items-center bg-white/5 p-2 rounded-lg" },
+    React.createElement("span", { className: "text-xs text-slate-400 text-center" }, `Série ${setIndex + 1}`),
+    React.createElement("input", { type: "number", step: "0.5", value: setData.w, onChange: (e) => onChange(setIndex, 'w', e.target.value), className: "set-input", placeholder: "KG" }),
+    React.createElement("input", { type: "number", value: setData.r, onChange: (e) => onChange(setIndex, 'r', e.target.value), className: "set-input", placeholder: "REPS" }),
+    React.createElement("div", { className: "flex justify-center" },
+      React.createElement("input", { id: id, type: "checkbox", className: "hidden", checked: isChecked, onChange: (e) => { setIsChecked(e.target.checked); onCheck(e.target.checked); } }),
+      React.createElement("label", { htmlFor: id, className: `w-9 h-9 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all duration-200 ${isChecked ? 'bg-emerald-500 border-emerald-500 scale-105' : 'bg-[#121824] border-white/10'}` }, "✓")
+    )
+  );
+};
+const ExerciseCard = ({ exercise, currentWeight, lastPerformance, week, onSavePerformance, onWeightChange, onRemove, onStartRest }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [sets, setSets] = useState([]);
+  const initialReps = typeof exercise.reps === 'number' ? exercise.reps : parseInt(String(exercise.reps).split('-')[0]) || 0;
+  useEffect(() => {
+    if (isOpen) {
+      setSets(Array.from({ length: exercise.sets }, () => ({ w: currentWeight, r: initialReps })));
+    }
+  }, [isOpen, exercise.sets, currentWeight, initialReps]);
+  const handleSetChange = (index, field, value) => {
+    const numericValue = field === 'w' ? parseFloat(value) : parseInt(value, 10);
+    const newSets = [...sets];
+    newSets[index] = { ...newSets[index], [field]: isNaN(numericValue) ? (field === 'w' ? currentWeight : initialReps) : numericValue };
+    setSets(newSets);
+  };
+  const getTechniqueByWeek = () => {
+    if (week <= 5) return ' • Tempo 3-1-2 (Bloc 1)';
+    if (week <= 11) return ' • Rest-Pause (Bloc 2)';
+    if (week <= 17) return ' • Drop-sets + Myo-reps (Bloc 3)';
+    return ' • Clusters + Partials (Bloc 4)';
+  }
+  const handleSave = () => {
+    const validSets = sets.filter(s => s.r > 0);
+    if (validSets.length > 0) {
+      onSavePerformance(exercise.name, validSets);
+      setIsOpen(false);
+    } else {
+      alert("Entrez au moins une répétition pour enregistrer.");
+    }
+  };
+  const muscleInfo = MUSCLE_MAPPING[exercise.name] || { primary: [], secondary: [], tertiary: [] };
+  return React.createElement("div", { className: "rounded-xl border border-white/5 bg-gradient-to-b from-[#0d111a] to-[#121824] overflow-hidden shadow-lg" },
+    React.createElement("header", { className: "flex justify-between items-center p-4 cursor-pointer", onClick: () => setIsOpen(!isOpen) },
+      React.createElement("div", { className: "flex-1" },
+        React.createElement("h3", { className: "font-bold text-amber-400 text-lg" }, exercise.name),
+        React.createElement("p", { className: "text-sm text-slate-400" }, `${exercise.sets} × ${exercise.reps} • ${exercise.rest}s repos • ${currentWeight}kg`)
+      ),
+      isOpen ? React.createElement(ChevronUpIcon, null) : React.createElement(ChevronDownIcon, null)
+    ),
+    isOpen && React.createElement("div", { className: "px-4 pb-4 bg-white/5" },
+      React.createElement("div", { className: "py-3 space-y-3" },
+        React.createElement("div", { className: "text-center font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg py-2 px-3" }, `✨ ${exercise.tech}${getTechniqueByWeek()}`),
+        lastPerformance ? React.createElement("div", { className: "text-sm bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 rounded-lg p-3" }, `Dernière perf: ${lastPerformance.weight}kg × ${lastPerformance.reps} reps (Semaine ${lastPerformance.week})`)
+          : React.createElement("div", { className: "text-sm bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-lg p-3" }, "Première fois pour cet exercice."),
+        React.createElement("div", { className: "flex gap-2 flex-wrap" },
+          muscleInfo.primary.map(m => React.createElement(MuscleTag, { key: m, muscle: m, type: "primary" })),
+          muscleInfo.secondary.map(m => React.createElement(MuscleTag, { key: m, muscle: m, type: "secondary" })),
+          muscleInfo.tertiary.map(m => React.createElement(MuscleTag, { key: m, muscle: m, type: "tertiary" }))
+        ),
+        React.createElement("div", { className: "space-y-2" },
+          sets.map((set, i) => React.createElement(SetRow, {
+            key: i, setIndex: i, setData: set, onChange: handleSetChange,
+            onCheck: (isChecked) => {
+              if (isChecked) {
+                const isLast = i === exercise.sets - 1;
+                onStartRest(exercise.rest, isLast ? 'Prochain exercice' : `Repos - ${exercise.name}`);
+              }
+            }
+          }))
+        ),
+        React.createElement("div", { className: "flex flex-wrap gap-2 pt-2" },
+          React.createElement("button", { onClick: () => onWeightChange(exercise.name), className: "btn-ios" }, "✏️ Poids"),
+          React.createElement("button", { onClick: handleSave, className: "btn-ios bg-sky-600 hover:bg-sky-500 text-white shadow-sky-500/30" }, "💾 Enregistrer"),
+          React.createElement("button", { onClick: () => onRemove(exercise.name), className: "btn-ios bg-red-600 hover:bg-red-500 text-white shadow-red-500/30" }, "🗑️ Retirer")
+        )
+      )
+    )
+  );
+};
 
-        <div class="card" style="margin-top:12px">
-          <div style="font-weight:800">Gestion des Exercices</div>
-          <div class="small" style="margin-top:8px" id="customCount">0 personnalisés</div>
-          <div style="margin-top:8px">
-            <button id="addCustom" class="btn ios">➕ Ajouter exercice</button>
-            <button id="addIndependent" class="btn ios">🌟 Créer exercice indépendant</button>
-            <button id="viewCustom" class="btn ios">👁 Voir</button>
-            <button id="manageSessionExercises" class="btn ios">📅 Gérer séances</button>
-          </div>
-        </div>
-      </div>
-    </div>
+// --- From components/PremiumHeatmap.tsx ---
+const heatmap_parseHistory = (hist) => { return Object.values(hist).flat(); };
+const heatmap_normalizeEntry = (e) => ({ ...e, _date: e.ts ? new Date(e.ts) : new Date() });
+const heatmap_dayKey = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const heatmap_addDays = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
+const heatmap_startOfWeek = (d) => { const r = new Date(d); const day = r.getDay(); const diff = r.getDate() - day + (day === 0 ? -6 : 1); r.setDate(diff); r.setHours(0, 0, 0, 0); return r; };
+const heatmap_computeMap = (hist) => {
+  const map = {};
+  hist.forEach(h => {
+    const e = heatmap_normalizeEntry(h);
+    if (!e._date) return;
+    const k = heatmap_dayKey(e._date);
+    if (!map[k]) map[k] = { v: 0, s: 0, entries: [] };
+    if (e.allSets) { e.allSets.forEach(s => { map[k].v += (s.w || 0) * (s.r || 0); map[k].s += 1; }); }
+    map[k].entries.push(e);
+  });
+  return map;
+};
+const heatmap_getIntensityClass = (v, max) => {
+  if (v === 0) return 'bg-slate-800/80 text-slate-500';
+  if (max <= 0) return 'bg-slate-800/80 text-slate-500';
+  const r = v / max;
+  if (r <= 0.15) return 'bg-gradient-to-br from-slate-700 to-slate-800 shadow-inner shadow-sky-500/30';
+  if (r <= 0.45) return 'bg-gradient-to-br from-sky-600 to-blue-700 shadow-inner shadow-blue-500/40';
+  if (r <= 0.75) return 'bg-gradient-to-br from-amber-500 to-orange-600 text-black shadow-lg shadow-amber-500/40';
+  return 'bg-gradient-to-br from-red-500 to-amber-600 text-black shadow-lg shadow-red-500/40';
+};
+const PremiumHeatmap = ({ history, onDayClick }) => {
+  const [refDate, setRefDate] = useState(heatmap_startOfWeek(new Date()));
+  const processedHistory = useMemo(() => heatmap_parseHistory(history), [history]);
+  const historyMap = useMemo(() => heatmap_computeMap(processedHistory), [processedHistory]);
+  const heatmapData = useMemo(() => {
+    const vols = Object.values(historyMap).map(x => x.v);
+    const maxVolume = Math.max(1, ...vols);
+    const weeks = [];
+    for (let w = 0; w < 4; w++) {
+      const weekStart = heatmap_addDays(refDate, w * 7);
+      const days = [];
+      for (let d = 0; d < 7; d++) {
+        const day = heatmap_addDays(weekStart, d);
+        const k = heatmap_dayKey(day);
+        const m = historyMap[k] || { v: 0, s: 0, entries: [] };
+        days.push({ d: day, v: m.v, s: m.s, e: m.entries });
+      }
+      weeks.push(days);
+    }
+    return { weeks, maxVolume };
+  }, [refDate, historyMap]);
+  const handlePrev = useCallback(() => setRefDate(prev => heatmap_addDays(prev, -28)), []);
+  const handleNext = useCallback(() => setRefDate(prev => heatmap_addDays(prev, 28)), []);
+  const startLabel = heatmapData.weeks[0][0].d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+  const endLabel = heatmapData.weeks[3][6].d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+  return React.createElement("div", { className: "bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl" },
+    React.createElement("h3", { className: "text-lg font-black text-amber-400 mb-4 text-shadow-lg shadow-amber-500/50" }, "Heatmap • Charge d'entraînement"),
+    React.createElement("div", { className: "flex justify-between items-center gap-2 flex-wrap mb-4" },
+      React.createElement("div", { className: "flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg p-1" },
+        React.createElement("button", { onClick: handlePrev, className: "btn-ios-small" }, "‹ Préc."),
+        React.createElement("span", { className: "text-sm font-semibold px-2 text-slate-300 whitespace-nowrap" }, `${startLabel} – ${endLabel}`),
+        React.createElement("button", { onClick: handleNext, className: "btn-ios-small" }, "Suiv. ›")
+      )
+    ),
+    React.createElement("div", { className: "grid grid-cols-7 gap-1.5 md:gap-2" },
+      ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(day => React.createElement("div", { key: day, className: "text-center text-xs font-bold text-slate-400 pb-1" }, day)),
+      heatmapData.weeks.flat().map((dayData, i) => {
+        const volumeText = dayData.v > 999 ? `${(dayData.v / 1000).toFixed(1)}k` : Math.round(dayData.v);
+        return React.createElement("div", { key: i, className: `h-16 md:h-20 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl ${heatmap_getIntensityClass(dayData.v, heatmapData.maxVolume)}`, onClick: () => onDayClick(dayData) },
+          React.createElement("div", { className: "font-bold text-lg" }, dayData.d.getDate()),
+          React.createElement("div", { className: "text-xs opacity-80" }, `${volumeText} kg`)
+        );
+      })
+    ),
+    React.createElement("div", { className: "flex justify-center flex-wrap gap-2 mt-4 text-xs text-slate-400" },
+      React.createElement("div", { className: "flex items-center gap-1.5" }, React.createElement("div", { className: "w-3 h-3 rounded-sm bg-slate-700" }), "Faible"),
+      React.createElement("div", { className: "flex items-center gap-1.5" }, React.createElement("div", { className: "w-3 h-3 rounded-sm bg-sky-600" }), "Moyen"),
+      React.createElement("div", { className: "flex items-center gap-1.5" }, React.createElement("div", { className: "w-3 h-3 rounded-sm bg-amber-500" }), "Haut"),
+      React.createElement("div", { className: "flex items-center gap-1.5" }, React.createElement("div", { className: "w-3 h-3 rounded-sm bg-red-500" }), "Max")
+    )
+  );
+};
 
-    <!-- Heatmap Premium Dark+Glass -->
-    <div id="heatmapPremium" class="card">
-      <div class="title">Heatmap • Charge d'entraînement (4 semaines)</div>
-      <div class="hm-header">
-        <div class="weekNav">
-          <button id="hmPrev">‹</button>
-          <div class="legendPill" id="hmRangeLabel">Semaine actuelle</div>
-          <button id="hmNext">›</button>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <div class="legendPill">Volume</div>
-          <div class="legendPill">Séries</div>
-        </div>
-      </div>
-
-      <div id="heatmapGrid" style="margin-top:14px;"></div>
-
-      <div class="hm-legend" style="margin-top:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;">
-        <div class="legendPill">Échelle</div>
-        <div class="legendPill" style="background:#1e293b;">Faible</div>
-        <div class="legendPill" style="background:#2563eb;">Moyen</div>
-        <div class="legendPill" style="background:#f59e0b;color:#000;">Haut</div>
-        <div class="legendPill" style="background:#ef4444;color:#000;">Max</div>
-      </div>
-    </div>
-
-    <div class="footer">© 2025 — HYBRID MASTER 51 — Ultimate V6</div>
-  </div>
-
-  <div id="restTimer" class="rest-timer" style="display:none">
-    <div class="timer-circle">
-      <svg width="72" height="72" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,0.06)" stroke-width="6" fill="none"/>
-        <circle id="timerProgress" cx="40" cy="40" r="34" stroke="url(#g1)" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray:214;stroke-dashoffset:214;transform:rotate(-90deg);transform-origin:50% 50%"></circle>
-        <defs><linearGradient id="g1"><stop offset="0" stop-color="#F59E0B"/><stop offset="1" stop-color="#ff8a00"/></linearGradient></defs>
-      </svg>
-      <div class="timer-text" id="timerText">0:00</div>
-    </div>
-    <div>
-      <div style="font-weight:800" id="nextExerciseName">Repos</div>
-      <div class="small">Temps restant</div>
-    </div>
-    <button id="skipTimer" class="timer-skip">✕</button>
-  </div>
-
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="overlay" id="modalOverlay"></div>
-    <div class="content" id="modalContent">
-      <div class="close-x" id="modalClose">✖</div>
-      <div id="modalInner"></div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script>
-    // ============================
-    // DONNÉES ET CONFIGURATION
-    // ============================
-    const MUSCLE_MAPPING = {
-      "Trap Bar Deadlift": { primary:["Ischios","Fessiers","Dos"], secondary:["Quadriceps","Abdominaux"], tertiary:["Mollets","Avant-bras"] },
-      "Goblet Squat": { primary:["Quadriceps","Fessiers"], secondary:["Ischios","Abdominaux"], tertiary:["Mollets"] },
-      "Leg Press": { primary:["Quadriceps","Ischios"], secondary:["Fessiers"], tertiary:["Mollets"] },
-      "Lat Pulldown": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
-      "Landmine Press": { primary:["Épaules","Triceps"], secondary:["Pectoraux"], tertiary:[] },
-      "Rowing Machine": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
-      "Spider Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
-      "Incline Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
-      "Cable Pushdown": { primary:["Triceps"], secondary:["Avant-bras"], tertiary:[] },
-      "Dumbbell Press": { primary:["Pectoraux"], secondary:["Triceps","Épaules"], tertiary:[] },
-      "Cable Fly": { primary:["Pectoraux"], secondary:[], tertiary:[] },
-      "Leg Press léger": { primary:["Quadriceps"], secondary:["Ischios","Fessiers"], tertiary:["Mollets"] },
-      "Extension Triceps Corde": { primary:["Triceps"], secondary:["Avant-bras"], tertiary:[] },
-      "Lateral Raises": { primary:["Épaules latérales"], secondary:["Trapèzes"], tertiary:[] },
-      "Face Pull": { primary:["Épaules postérieures","Trapèzes"], secondary:["Dos"], tertiary:[] },
-      "Overhead Extension": { primary:["Triceps longs"], secondary:[], tertiary:[] },
-      "Landmine Row": { primary:["Dos"], secondary:["Biceps"], tertiary:["Avant-bras"] },
-      "Leg Curl": { primary:["Ischios"], secondary:["Fessiers"], tertiary:["Mollets"] },
-      "Leg Extension": { primary:["Quadriceps"], secondary:[], tertiary:[] },
-      "Dumbbell Fly": { primary:["Pectoraux"], secondary:["Épaules"], tertiary:[] },
-      "EZ Bar Curl": { primary:["Biceps"], secondary:["Avant-bras"], tertiary:[] },
-      "Wrist Curl": { primary:["Avant-bras"], secondary:[], tertiary:[] },
-      "Hammer Curl": { primary:["Biceps","Avant-bras"], secondary:[], tertiary:[] }
+// --- From App.tsx ---
+const defaultState = () => {
+  const weights = {};
+  Object.values(PROGRAM).forEach(s => s.exercises.forEach(e => { weights[e.name] = e.weight; }));
+  return { week: 1, program: JSON.parse(JSON.stringify(PROGRAM)), weights: weights, hist: {}, customExercises: [] };
+};
+const App = () => {
+  const [state, setState] = useState(() => { try { const raw = localStorage.getItem(STATE_KEY); return raw ? JSON.parse(raw) : defaultState(); } catch (e) { console.error("Erreur chargement state:", e); return defaultState(); } });
+  const [currentSessionKey, setCurrentSessionKey] = useState(null);
+  const [restTimer, setRestTimer] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [quickMsg, setQuickMsg] = useState(null);
+  useEffect(() => { try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) { console.error("Erreur sauvegarde state:", e); } }, [state]);
+  useEffect(() => { if (quickMsg) { const timer = setTimeout(() => setQuickMsg(null), 2800); return () => clearTimeout(timer); } }, [quickMsg]);
+  const showQuick = (text, color = 'text-green-400') => setQuickMsg({ text, color });
+  const handleWeekChange = (direction) => setState(prev => ({ ...prev, week: Math.max(1, prev.week + direction) }));
+  const handleSavePerformance = (exerciseName, sets) => {
+    const best = sets.reduce((a, b) => b.r * b.w > a.r * a.w ? b : a, sets[0]);
+    const newEntry = { week: state.week, weight: best.w, reps: best.r, ts: Date.now(), allSets: sets };
+    setState(prev => ({ ...prev, hist: { ...prev.hist, [exerciseName]: [...(prev.hist[exerciseName] || []), newEntry] }, weights: { ...prev.weights, [exerciseName]: best.w } }));
+    showQuick(`✅ ${exerciseName}: ${best.r} reps @ ${best.w}kg enregistré`);
+  };
+  const handleRemoveExercise = (exerciseName) => {
+    if (currentSessionKey && window.confirm(`Retirer "${exerciseName}" de cette séance ?`)) {
+      setState(prev => {
+        const newProgram = { ...prev.program };
+        newProgram[currentSessionKey].exercises = newProgram[currentSessionKey].exercises.filter(ex => ex.name !== exerciseName);
+        return { ...prev, program: newProgram };
+      });
+      showQuick('Exercice retiré', 'text-red-400');
+    }
+  };
+  const handleReset = () => {
+    if (window.confirm('Réinitialiser toutes les données? Cette action est irréversible.')) {
+      localStorage.removeItem(STATE_KEY);
+      setState(defaultState());
+      setCurrentSessionKey(null);
+      showQuick('Application réinitialisée', 'text-red-400');
+    }
+  };
+  const handleExport = () => {
+    let csv = 'Exercise,Week,Set,Reps,Weight,Date\n';
+    Object.entries(state.hist).forEach(([ex, arr]) => {
+      arr.forEach(r => {
+        if (r.allSets && r.allSets.length) {
+          r.allSets.forEach((s, idx) => { csv += `"${ex}",${r.week},${idx + 1},${s.r},${s.w},"${new Date(r.ts).toLocaleString()}"\n`; });
+        }
+      });
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `ultimate_export_${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url); showQuick('CSV exporté');
+  };
+  const handleBackup = () => {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `hm51_backup_${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(url); showQuick('Sauvegarde téléchargée');
+  };
+  const handleOpenWeightModal = (exerciseName) => {
+    const currentWeight = state.weights[exerciseName] || 0;
+    const SaveButton = () => {
+      const newWeight = parseFloat(document.getElementById('new-weight-input').value);
+      if (!isNaN(newWeight) && newWeight >= 0) {
+        setState(prev => ({ ...prev, weights: { ...prev.weights, [exerciseName]: newWeight } }));
+        setModal(null); showQuick(`Poids de ${exerciseName} mis à jour.`);
+      } else { alert('Poids invalide.'); }
     };
+    setModal({
+      title: `Modifier le poids pour ${exerciseName}`,
+      content: React.createElement("div", null,
+        React.createElement("input", { id: "new-weight-input", type: "number", defaultValue: currentWeight, className: "set-input w-full text-lg p-3", autoFocus: true }),
+        React.createElement("div", { className: "flex gap-2 mt-4" },
+          React.createElement("button", { onClick: SaveButton, className: "btn-ios bg-sky-600 hover:bg-sky-500 text-white shadow-sky-500/30" }, "Enregistrer"),
+          React.createElement("button", { onClick: () => setModal(null), className: "btn-ios" }, "Annuler")
+        )
+      )
+    });
+  };
+  const blockName = useMemo(() => {
+    if (state.week <= 5) return 'Bloc 1 - Fondation • Tempo contrôlé';
+    if (state.week <= 11) return 'Bloc 2 - Surcharge • Rest-Pause';
+    if (state.week <= 17) return 'Bloc 3 - Surcompensation • Drop-sets + Myo-reps';
+    return 'Bloc 4 - Intensification • Clusters + Partials';
+  }, [state.week]);
+  const handleOpenStats = () => setModal({ title: `Statistiques • Semaine ${state.week}`, content: React.createElement(StatsModalContent, { state: state }) });
+  const handleDayClick = (data) => {
+    if (data.e.length === 0) return;
+    setModal({
+      title: `Détails du ${data.d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`,
+      content: React.createElement("div", { className: "text-white" },
+        React.createElement("p", { className: "font-bold" }, `Volume: ${Math.round(data.v).toLocaleString()} kg`),
+        React.createElement("p", null, `Séries totales: ${data.s}`),
+        React.createElement("ul", { className: "list-disc pl-5 mt-4 space-y-1" },
+          data.e.flatMap(entry => entry.allSets.map((set, i) => React.createElement("li", { key: `${entry.ts}-${i}` }, `${entry.name || 'Exercice'}: ${set.r} reps @ ${set.w}kg`)))
+        )
+      )
+    });
+  };
+  const currentSession = currentSessionKey ? state.program[currentSessionKey] : null;
+  return React.createElement("div", { className: "max-w-7xl mx-auto p-3 md:p-6 text-slate-200" },
+    React.createElement("header", { className: "flex items-center gap-4 mb-6" },
+      React.createElement(TrophyIcon, null),
+      React.createElement("div", null,
+        React.createElement("h1", { className: "text-2xl font-black bg-gradient-to-r from-amber-400 to-orange-500 text-transparent bg-clip-text" }, "HYBRID MASTER 51 — Ultimate V6"),
+        React.createElement("p", { className: "text-sm text-slate-400" }, "26 semaines · 3 séances / semaine · Analyse & Heatmap")
+      )
+    ),
+    React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
+      React.createElement("main", { className: "lg:col-span-2 space-y-6" },
+        React.createElement("div", { className: "flex justify-between items-center bg-[#0d111a] p-4 rounded-xl border border-white/5 shadow-lg" },
+          React.createElement("div", null,
+            React.createElement("div", { className: "text-xl font-bold" }, "Semaine ", React.createElement("span", { className: "text-amber-400" }, state.week)),
+            React.createElement("div", { className: "text-xs text-slate-400" }, blockName)
+          ),
+          React.createElement("div", { className: "flex gap-2" },
+            React.createElement("button", { onClick: () => handleWeekChange(-1), className: "btn-ios" }, "← Préc."),
+            React.createElement("button", { onClick: () => handleWeekChange(1), className: "btn-ios bg-sky-600 hover:bg-sky-500 text-white shadow-sky-500/30" }, "Suiv. →")
+          )
+        ),
+        !currentSessionKey ? React.createElement("div", { className: "bg-[#0d111a] p-4 rounded-xl border border-white/5 shadow-lg" },
+          React.createElement("h2", { className: "font-bold text-lg mb-4" }, "Séances disponibles"),
+          React.createElement("div", { className: "space-y-3" },
+            Object.values(state.program).map(session => React.createElement("button", { key: session.key, onClick: () => setCurrentSessionKey(session.key), className: "w-full text-left p-4 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold shadow-lg shadow-amber-500/20 hover:scale-105 hover:shadow-xl hover:shadow-amber-500/40 transition-all duration-200" },
+              React.createElement("div", null, session.title),
+              React.createElement("div", { className: "text-sm font-semibold opacity-80" }, `${session.exercises.length} exercices • ${session.exercises.reduce((acc, ex) => acc + ex.sets, 0)} séries`)
+            ))
+          )
+        ) : React.createElement("div", null,
+          React.createElement("div", { className: "flex justify-between items-center mb-4" },
+            React.createElement("h2", { className: "text-xl font-bold" }, currentSession.title),
+            React.createElement("button", { onClick: () => setCurrentSessionKey(null), className: "btn-ios" }, "← Retour aux séances")
+          ),
+          React.createElement("div", { className: "space-y-4" },
+            currentSession.exercises.map(ex => React.createElement(ExerciseCard, { key: ex.name, exercise: ex, currentWeight: state.weights[ex.name] || ex.weight, lastPerformance: (state.hist[ex.name] || []).slice(-1)[0], week: state.week, onSavePerformance: handleSavePerformance, onWeightChange: handleOpenWeightModal, onRemove: handleRemoveExercise, onStartRest: (duration, nextExercise) => setRestTimer({ duration, nextExercise }) }))
+          )
+        )
+      ),
+      React.createElement("aside", { className: "space-y-6" },
+        React.createElement("div", { className: "bg-[#0d111a] p-4 rounded-xl border border-white/5 shadow-lg" },
+          React.createElement("h3", { className: "font-bold text-lg" }, "Tableau de bord"),
+          React.createElement("p", { className: `text-sm mt-2 h-5 transition-opacity duration-300 ${quickMsg ? 'opacity-100' : 'opacity-0'}` }, React.createElement("span", { className: quickMsg?.color }, quickMsg?.text)),
+          React.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 mt-3" },
+            React.createElement("button", { onClick: handleOpenStats, className: "btn-dashboard" }, React.createElement(ChartIcon, null), " Statistiques"),
+            React.createElement("button", { onClick: handleExport, className: "btn-dashboard" }, React.createElement(ExportIcon, null), " Export"),
+            React.createElement("button", { onClick: handleBackup, className: "btn-dashboard" }, React.createElement(BackupIcon, null), " Backup"),
+            React.createElement("button", { onClick: handleReset, className: "btn-dashboard text-red-400" }, React.createElement(ResetIcon, null), " Reset")
+          )
+        ),
+        React.createElement("div", { className: "bg-[#0d111a] p-4 rounded-xl border border-white/5 shadow-lg" },
+          React.createElement("h3", { className: "font-bold text-lg mb-2" }, "Gestion des Exercices"),
+          React.createElement("p", { className: "text-sm text-slate-400 mb-3" }, `${state.customExercises.length} exercices personnalisés`),
+          React.createElement("div", { className: "grid grid-cols-2 gap-2" },
+            React.createElement("button", { className: "btn-dashboard" }, React.createElement(AddIcon, null), "Ajouter"),
+            React.createElement("button", { className: "btn-dashboard" }, React.createElement(ViewIcon, null), "Voir"),
+            React.createElement("button", { className: "btn-dashboard col-span-2" }, React.createElement(CreateIndependentIcon, null), "Créer Indépendant")
+          )
+        )
+      )
+    ),
+    React.createElement("div", { className: "mt-6" }, React.createElement(PremiumHeatmap, { history: state.hist, onDayClick: handleDayClick })),
+    React.createElement("footer", { className: "text-center mt-8 text-sm text-slate-500" }, `© ${new Date().getFullYear()} — HYBRID MASTER 51 — Ultimate V6`),
+    restTimer && React.createElement(RestTimer, { duration: restTimer.duration, nextExercise: restTimer.nextExercise, onFinish: () => { setRestTimer(null); showQuick('⏱️ Repos terminé!', 'text-amber-400'); try { navigator.vibrate([100, 50, 100]); } catch (e) { } }, onSkip: () => setRestTimer(null) }),
+    React.createElement(Modal, { isOpen: !!modal, onClose: () => setModal(null), title: modal?.title || '' }, modal?.content),
+    React.createElement("style", null, `
+      .btn-ios { background: linear-gradient(135deg, #f59e0b, #f97316); color: black; border: none; font-weight: 700; transition: all 0.25s ease; box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3); border-radius: 12px; padding: 10px 16px; cursor: pointer; }
+      .btn-ios:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(249, 115, 22, 0.5); }
+      .btn-ios-small { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+      .btn-ios-small:hover { background: rgba(255,255,255,0.18); }
+      .btn-dashboard { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #121824; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 600; transition: all 0.2s; }
+      .btn-dashboard:hover { background: #1e293b; color: #f59e0b; }
+      .set-input { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 10px; color: #fff; font-weight: 600; text-align: center; font-size: 14px; transition: all 0.25s; height: 42px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+      .set-input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), inset 0 2px 4px rgba(0,0,0,0.1); }
+    `)
+  );
+};
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
+}
+const root = ReactDOM.createRoot(rootElement);
+root.render(React.createElement(React.StrictMode, null, React.createElement(App, null)));
 
-    // Configuration de progression automatique
-    const PROGRESSION_CONFIG = {
-      "Trap Bar Deadlift": { depart: 75, increment: 5, frequence: 3 },
-      "Goblet Squat": { depart: 25, increment: 2.5, frequence: 2 },
-      "Leg Press": { depart: 110, increment: 10, frequence: 2 },
-      "Leg Press léger": { depart: 80, increment: 10, frequence: 3 },
-      "Lat Pulldown": { depart: 60, increment: 2.5, frequence: 2 },
-      "Rowing Machine": { depart: 50, increment: 2.5, frequence: 2 },
-      "Landmine Press": { depart: 35, increment: 2.5, frequence: 2 },
-      "Landmine Row": { depart: 55, increment: 2.5, frequence: 2 },
-      "Dumbbell Press": { depart: 22, increment: 2.5, frequence: 3 },
-      "Cable Fly": { depart: 10, increment: 2.5, frequence: 3 },
-      "Dumbbell Fly": { depart: 10, increment: 2.5, frequence: 3 },
-      "Leg Curl": { depart: 40, increment: 5, frequence: 3 },
-      "Leg Extension": { depart: 35, increment: 5, frequence: 3 },
-      "Extension Triceps Corde": { depart: 20, increment: 2.5, frequence: 3 },
-      "Overhead Extension": { depart: 15, increment: 2.5, frequence: 3 },
-      "Cable Pushdown": { depart: 20, increment: 2.5, frequence: 3 },
-      "Lateral Raises": { depart: 8, increment: 2.5, frequence: 4 },
-      "Face Pull": { depart: 20, increment: 2.5, frequence: 3 },
-      "Spider Curl": { depart: 12, increment: 2.5, frequence: 3 },
-      "Incline Curl": { depart: 12, increment: 2.5, frequence: 3 },
-      "EZ Bar Curl": { depart: 25, increment: 2.5, frequence: 3 },
-      "Hammer Curl": { depart: 12, increment: 2.5, frequence: 3 },
-      "Wrist Curl": { depart: 30, increment: 2.5, frequence: 4 }
-    };
-
-    const DELOAD_WEEKS = [6, 12, 18, 24, 26];
-
-    const PROGRAM = {
-      dimanche: {
-        key:'dimanche', 
-        title: "Dimanche - Dos + Jambes Lourdes + Bras (68 min)",
-        exercises:[
-          { name:"Trap Bar Deadlift", sets:5, reps:"6-8", rest:120, weight:75, type:"barre", tech:"RPE 6-8" },
-          { name:"Goblet Squat", sets:4, reps:"10", rest:75, weight:25, type:"haltères", tech:"Tempo 3-1-2" },
-          { name:"Leg Press", sets:4, reps:"10", rest:75, weight:110, type:"machine", tech:"Drop-set dernière série" },
-          { name:"Lat Pulldown", sets:4, reps:"10", rest:90, weight:60, type:"machine", tech:"Myo-reps" },
-          { name:"Landmine Press", sets:4, reps:"10", rest:90, weight:35, type:"barre", tech:"Tempo 2-1-2" },
-          { name:"Rowing Machine", sets:4, reps:"10", rest:75, weight:50, type:"machine", tech:"Tempo 2-1-2" },
-          { name:"Spider Curl / Incline Curl*", sets:4, reps:"12", rest:75, weight:12, type:"haltères", tech:"Rest-pause" },
-          { name:"Cable Pushdown", sets:3, reps:"12", rest:75, weight:20, type:"machine", tech:"Rest-pause" }
-        ]
-      },
-      mardi: {
-        key:'mardi', 
-        title:"Mardi - Pecs + Épaules + Triceps (70 min)",
-        exercises:[
-          { name:"Dumbbell Press", sets:5, reps:"10", rest:105, weight:22, type:"haltères", tech:"Cluster sets" },
-          { name:"Cable Fly", sets:4, reps:"12", rest:60, weight:10, type:"machine", tech:"Tension continue" },
-          { name:"Leg Press léger", sets:3, reps:"15", rest:60, weight:80, type:"machine", tech:"Standard" },
-          { name:"Extension Triceps Corde", sets:5, reps:"12", rest:75, weight:20, type:"machine", tech:"Drop-set" },
-          { name:"Lateral Raises", sets:5, reps:"15", rest:75, weight:8, type:"haltères", tech:"Myo-reps" },
-          { name:"Face Pull", sets:5, reps:"15", rest:60, weight:20, type:"machine", tech:"Tempo 3-1-2" },
-          { name:"Rowing Machine", sets:4, reps:"12", rest:75, weight:50, type:"machine", tech:"Tempo 2-1-2" },
-          { name:"Overhead Extension", sets:4, reps:"12", rest:60, weight:15, type:"machine", tech:"Rest-pause" }
-        ]
-      },
-      vendredi: {
-        key:'vendredi', 
-        title:"Vendredi - Dos + Jambes + Bras + Épaules (73 min)",
-        exercises:[
-          { name:"Landmine Row", sets:5, reps:"10", rest:105, weight:55, type:"barre", tech:"Tempo 2-1-2" },
-          { name:"Leg Curl", sets:5, reps:"12", rest:75, weight:40, type:"machine", tech:"Drop-set dernière série" },
-          { name:"Leg Extension", sets:4, reps:"15", rest:75, weight:35, type:"machine", tech:"Standard" },
-          { name:"Cable Fly", sets:4, reps:"15", rest:60, weight:10, type:"machine", tech:"Tension continue" },
-          { name:"Dumbbell Fly", sets:4, reps:"12", rest:75, weight:10, type:"haltères", tech:"Tempo 3-1-2" },
-          { name:"EZ Bar Curl", sets:5, reps:"12", rest:75, weight:25, type:"barre", tech:"Rest-pause" },
-          { name:"Overhead Extension", sets:3, reps:"12", rest:75, weight:15, type:"machine", tech:"Rest-pause" },
-          { name:"Lateral Raises", sets:3, reps:"15", rest:60, weight:8, type:"haltères", tech:"Myo-reps" },
-          { name:"Wrist Curl", sets:3, reps:"20", rest:45, weight:30, type:"barre", tech:"Standard" }
-        ]
-      },
-      maison: {
-        key:'maison', 
-        title:"Séance Maison - Mardi & Jeudi soir",
-        exercises:[
-          { name:"Hammer Curl", sets:3, reps:"12", rest:60, weight:12, type:"haltères", tech:"Standard" }
-        ]
-      }
-    };
-
-    // ============================
-    // FONCTIONS DE PROGRESSION AVANCÉES
-    // ============================
-
-    function getCurrentBlock(semaine) {
-      if (semaine <= 5) return 1;
-      if (semaine <= 11) return 2;
-      if (semaine <= 17) return 3;
-      if (semaine <= 25) return 4;
-      return 1;
-    }
-
-    function isDeloadWeek(semaine) {
-      return DELOAD_WEEKS.includes(semaine);
-    }
-
-    function getBicepsExercise(semaine) {
-      const bloc = getCurrentBlock(semaine);
-      if (bloc === 1 || bloc === 3) return "Incline Curl";
-      if (bloc === 2 || bloc === 4) return "Spider Curl";
-      return "Incline Curl";
-    }
-
-    function calculerCharge(exerciceNom, semaine) {
-      const config = PROGRESSION_CONFIG[exerciceNom];
-      if (!config) return 0;
-      
-      const base = config.depart;
-      const increment = config.increment;
-      const frequence = config.frequence;
-      
-      let progressions = 0;
-      for (let s = 1; s <= semaine; s++) {
-        if (!isDeloadWeek(s) && s % frequence === 1 && s > 1) {
-          progressions++;
-        }
-      }
-      
-      let charge = base + (increment * progressions);
-      
-      // Application deload
-      if (isDeloadWeek(semaine)) {
-        charge = Math.round(charge * 0.6 * 2) / 2;
-      }
-      
-      return charge;
-    }
-
-    function updateAllWeights() {
-      Object.keys(PROGRESSION_CONFIG).forEach(exercice => {
-        state.weights[exercice] = calculerCharge(exercice, state.week);
-      });
-      saveState();
-    }
-
-    function getTechniqueDetails(exercice, semaine) {
-      const bloc = getCurrentBlock(semaine);
-      const isDeload = isDeloadWeek(semaine);
-      
-      if (isDeload) {
-        return "DELOAD: Charge réduite à 60%, tempo 4-1-2, RPE 5-6";
-      }
-      
-      switch(bloc) {
-        case 1:
-          return getBloc1Technique(exercice);
-        case 2:
-          return getBloc2Technique(exercice);
-        case 3:
-          return getBloc3Technique(exercice);
-        case 4:
-          return getBloc4Technique(exercice);
-        default:
-          return "Standard";
-      }
-    }
-
-    function getBloc1Technique(exercice) {
-      const techniques = {
-        "Cable Fly": "Tempo 3-1-2 • Pause 2s bras écartés",
-        "Dumbbell Fly": "Tempo 3-1-2 • Pause 2s bras écartés", 
-        "Incline Curl": "Tempo 3-1-2 • Pause 2s bras tendus",
-        "EZ Bar Curl": "Tempo 3-1-2 • Pause 2s bras tendus",
-        "Lateral Raises": "Tempo 3-1-2 • Pause 1s bras horizontaux",
-        "Face Pull": "Tempo 3-1-2 • Pause 1s contraction",
-        "default": "Tempo 3-1-2 • RPE 6-7"
-      };
-      return techniques[exercice] || techniques.default;
-    }
-
-    function getBloc2Technique(exercice) {
-      const restPause = {
-        "Trap Bar Deadlift": "Rest-Pause S5: 6-8 reps → 20s repos → 2-3 reps",
-        "Dumbbell Press": "Rest-Pause S5: 10 reps → 20s repos → 3-4 reps", 
-        "Landmine Row": "Rest-Pause S5: 10 reps → 20s repos → 3-4 reps",
-        "default": "Tempo 2-1-2 • RPE 7-8"
-      };
-      return restPause[exercice] || restPause.default;
-    }
-
-    function getBloc3Technique(exercice) {
-      const dropSets = {
-        "Goblet Squat": "Drop-Set S4: -25% → 8-10 reps",
-        "Leg Press": "Drop-Set S4: -25% → 10-12 reps",
-        "Lat Pulldown": "Drop-Set S4: -20% → 8-10 reps",
-        "Dumbbell Press": "Drop-Set S5: -25% → 8-10 reps",
-        "Cable Fly": "Drop-Set S4: -25% → 10-12 reps",
-        "Extension Triceps Corde": "Drop-Set S5: -20% → 10-12 reps",
-        "Lateral Raises": "Drop-Set S5: -25% → 12-15 reps",
-        "Landmine Row": "Drop-Set S5: -20% → 8-10 reps", 
-        "Leg Curl": "Drop-Set S5: -25% → 10-12 reps",
-        "Leg Extension": "Drop-Set S4: -25% → 12-15 reps",
-        "Dumbbell Fly": "Drop-Set S4: -25% → 10-12 reps"
-      };
-      
-      const myoReps = {
-        "Face Pull": "Myo-Reps S5: 15 reps → 5s repos → 5×5 mini-sets",
-        "Overhead Extension": "Myo-Reps S4: 12 reps → 5s repos → 4×4 mini-sets",
-        "Incline Curl": "Myo-Reps S4: 12 reps → 5s repos → 4×4 mini-sets", 
-        "Spider Curl": "Myo-Reps S4: 12 reps → 5s repos → 4×4 mini-sets",
-        "Cable Fly": "Myo-Reps S4: 15 reps → 5s repos → 5×5 mini-sets",
-        "Rowing Machine": "Myo-Reps S4: 12 reps → 5s repos → 4×4 mini-sets"
-      };
-      
-      return dropSets[exercice] || myoReps[exercice] || "RPE 8 • Techniques intensification";
-    }
-
-    function getBloc4Technique(exercice) {
-      const clusters = {
-        "Trap Bar Deadlift": "Cluster S5: 3 reps → 20s → 2 reps → 20s → 2 reps (7 total)",
-        "Dumbbell Press": "Cluster S5: 4 reps → 15s → 3 reps → 15s → 3 reps (10 total)",
-        "Landmine Row": "Cluster S5: 4 reps → 15s → 3 reps → 15s → 3 reps (10 total)", 
-        "Leg Press": "Cluster S4: 4 reps → 20s → 3 reps → 20s → 3 reps (10 total)"
-      };
-      
-      const partials = {
-        "Goblet Squat": "Partials S4: 10 reps complètes → 5 demi-reps amplitude haute",
-        "Leg Press": "Partials S4: 10 reps complètes → 8 quarts de reps",
-        "Leg Curl": "Partials S5: 12 reps complètes → 6-8 partials amplitude haute", 
-        "Leg Extension": "Partials S4: 15 reps complètes → 10 partials (derniers 30°)"
-      };
-      
-      const myoRepsAll = [
-        "Face Pull", "Lateral Raises", "Overhead Extension", "Cable Fly", 
-        "Dumbbell Fly", "Incline Curl", "Spider Curl", "EZ Bar Curl"
-      ];
-      
-      if (myoRepsAll.includes(exercice)) {
-        return "Myo-Reps dernière série • RPE 8-9";
-      }
-      
-      return clusters[exercice] || partials[exercice] || "RPE 8-9 • Techniques avancées";
-    }
-
-    function calculateExactMuscleVolumes() {
-      return {
-        "Quadriceps": 23,
-        "Ischios": 17, 
-        "Fessiers": 19,
-        "Dos": 30,
-        "Pectoraux": 22,
-        "Épaules postérieures": 12,
-        "Épaules latérales": 10,
-        "Biceps": 19,
-        "Triceps": 20,
-        "Avant-bras": 16
-      };
-    }
-
-    function getOptimalRange(muscle) {
-      const ranges = {
-        "Quadriceps": { min: 18, max: 24 },
-        "Ischios": { min: 14, max: 20 },
-        "Fessiers": { min: 14, max: 20 },
-        "Dos": { min: 18, max: 24 },
-        "Pectoraux": { min: 16, max: 22 },
-        "Épaules postérieures": { min: 10, max: 14 },
-        "Épaules latérales": { min: 6, max: 10 },
-        "Biceps": { min: 14, max: 20 },
-        "Triceps": { min: 12, max: 18 },
-        "Avant-bras": { min: 6, max: 12 }
-      };
-      return ranges[muscle] || { min: 0, max: 0 };
-    }
-
-    // ============================
-    // TESTS UNITAIRES
-    // ============================
-
-    function runAllTests() {
-      console.log("🧪 LANCEMENT DES TESTS UNITAIRES HYBRID MASTER 51");
-      
-      // Test 1: Charge Trap Bar semaine 26
-      const trapBarS26 = calculerCharge("Trap Bar Deadlift", 26);
-      console.assert(trapBarS26 === 120, `❌ Trap Bar S26 devrait être 120kg, obtenu: ${trapBarS26}kg`);
-      console.log(`✅ Trap Bar S26: ${trapBarS26}kg`);
-
-      // Test 2: Charge Dumbbell Press semaine 12
-      const dbPressS12 = calculerCharge("Dumbbell Press", 12);
-      console.assert(dbPressS12 === 30, `❌ Dumbbell Press S12 devrait être 30kg, obtenu: ${dbPressS12}kg`);
-      console.log(`✅ Dumbbell Press S12: ${dbPressS12}kg`);
-
-      // Test 3: Deload semaine 6
-      const isDeloadS6 = isDeloadWeek(6);
-      console.assert(isDeloadS6 === true, `❌ Semaine 6 devrait être deload`);
-      console.log(`✅ Semaine 6 deload: ${isDeloadS6}`);
-
-      // Test 4: Bloc semaine 15
-      const blocS15 = getCurrentBlock(15);
-      console.assert(blocS15 === 3, `❌ Semaine 15 devrait être Bloc 3, obtenu: Bloc ${blocS15}`);
-      console.log(`✅ Semaine 15: Bloc ${blocS15}`);
-
-      // Test 5: Rotation biceps semaine 9
-      const bicepsS9 = getBicepsExercise(9);
-      console.assert(bicepsS9 === "Spider Curl", `❌ S9 devrait être Spider Curl, obtenu: ${bicepsS9}`);
-      console.log(`✅ S9 Biceps: ${bicepsS9}`);
-
-      // Test 6: Volume Pectoraux
-      const volPecs = calculateExactMuscleVolumes().Pectoraux;
-      console.assert(volPecs === 22, `❌ Volume Pectoraux devrait être 22, obtenu: ${volPecs}`);
-      console.log(`✅ Volume Pectoraux: ${volPecs}`);
-
-      // Test 7: Séries Dimanche
-      const seriesDimanche = PROGRAM.dimanche.exercises.reduce((total, ex) => total + ex.sets, 0);
-      console.assert(seriesDimanche === 31, `❌ Dimanche devrait avoir 31 séries, obtenu: ${seriesDimanche}`);
-      console.log(`✅ Séries Dimanche: ${seriesDimanche}`);
-
-      console.log("🎉 TOUS LES TESTS PASSÉS AVEC SUCCÈS!");
-    }
-
-    // ============================
-    // ÉTAT ET INITIALISATION
-    // ============================
-    const STATE_KEY = 'hm51_v_full_v6';
-    let state = null;
-    let currentSessionKey = null;
-    let currentView = 'week';
-    let autoSwitchInterval;
-
-    function defaultState(){
-      const weights = {};
-      Object.values(PROGRAM).forEach(s => s.exercises.forEach(e => { 
-        weights[e.name] = e.weight; 
-      }));
-      
-      return {
-        week: 1,
-        program: JSON.parse(JSON.stringify(PROGRAM)),
-        weights: weights,
-        hist: {},
-        customExercises: []
-      };
-    }
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(STATE_KEY);
-        if(raw) return JSON.parse(raw);
-      }catch(e){ 
-        console.error("Erreur chargement state:", e);
-        return defaultState();
-      }
-      return defaultState();
-    }
-
-    function saveState(){
-      try{ 
-        localStorage.setItem(STATE_KEY, JSON.stringify(state));
-      }catch(e){ 
-        console.error("Erreur sauvegarde state:", e);
-      }
-    }
-
-    // ============================
-    // FONCTIONS UTILITAIRES
-    // ============================
-    let quickTimer;
-    function showQuick(msg, color){
-      const el = document.getElementById('quickMsg');
-      if(!el) return;
-      el.textContent = msg;
-      el.style.color = color || '';
-      clearTimeout(quickTimer);
-      quickTimer = setTimeout(()=>{ 
-        el.textContent='Prêt.'; 
-        el.style.color=''; 
-      }, 2800);
-    }
-
-    function sanitizeId(name){ 
-      return name.replace(/[^a-z0-9]/gi,'_'); 
-    }
-
-    // ============================
-    // GESTION MODALS
-    // ============================
-    function openModal(html){
-      const modal = document.getElementById('modal');
-      const inner = document.getElementById('modalInner');
-      inner.innerHTML = html;
-      modal.classList.add('active'); 
-      modal.setAttribute('aria-hidden','false');
-    }
-
-    function closeModal(){ 
-      const modal = document.getElementById('modal'); 
-      modal.classList.remove('active'); 
-      modal.setAttribute('aria-hidden','true'); 
-      document.getElementById('modalInner').innerHTML='';
-    }
-
-    // ============================
-    // RENDU PRINCIPAL
-    // ============================
-    function renderHeader(){
-      document.getElementById('weekDisplay').textContent = state.week;
-      const blockName = document.getElementById('blockName');
-      const bloc = getCurrentBlock(state.week);
-      const isDeload = isDeloadWeek(state.week);
-      
-      if (isDeload) {
-        blockName.textContent = 'DELOAD • Charge -40% • RPE 5-6';
-        blockName.style.color = 'var(--secondary)';
-      } else {
-        switch(bloc) {
-          case 1:
-            blockName.textContent = 'Bloc 1 - Fondation • Tempo 3-1-2 • RPE 6-7';
-            break;
-          case 2:
-            blockName.textContent = 'Bloc 2 - Surcharge • Rest-Pause • RPE 7-8';
-            break;
-          case 3:
-            blockName.textContent = 'Bloc 3 - Surcompensation • Drop-sets + Myo-reps • RPE 8';
-            break;
-          case 4:
-            blockName.textContent = 'Bloc 4 - Intensification • Clusters + Partials • RPE 8-9';
-            break;
-        }
-        blockName.style.color = 'var(--accent)';
-      }
-    }
-
-    function renderProgramList(){
-      const list = document.getElementById('progList');
-      list.innerHTML = '';
-      Object.values(state.program).forEach(s=>{
-        const totalSets = s.exercises.reduce((a,b)=>a+b.sets,0);
-        const btn = document.createElement('button');
-        btn.className='session-btn ios';
-        btn.innerHTML = `<div style="font-weight:800">${s.title}</div><div class="small">${s.exercises.length} ex • ${totalSets} séries</div>`;
-        btn.onclick = ()=> openSession(s.key);
-        list.appendChild(btn);
-      });
-      document.getElementById('customCount').textContent = `${state.customExercises.length} personnalisés`;
-    }
-
-    function renderHeatmap(){
-      const el = document.getElementById('heatmap'); 
-      el.innerHTML='';
-      
-      const days = 7;
-      const dayVolumes = new Array(days).fill(0);
-      const sessionDayMap = { dimanche:0, mardi:2, vendredi:5 };
-      
-      Object.values(state.program).forEach(sess=>{
-        const vol = sess.exercises.reduce((acc,ex)=> {
-          const reps = (typeof ex.reps === 'number') ? ex.reps : parseInt(String(ex.reps).split('-')[0])||0;
-          const w = state.weights[ex.name] || ex.weight || 0;
-          return acc + (w*reps*ex.sets);
-        },0);
-        const dayIndex = sessionDayMap[sess.key] || 0;
-        dayVolumes[dayIndex] += vol;
-      });
-      
-      const max = Math.max(...dayVolumes,1);
-      for(let d=0;d<days;d++){
-        const v = dayVolumes[d];
-        const ratio = v / max;
-        let cls='c1';
-        if(ratio>0.75) cls='c4'; 
-        else if(ratio>0.5) cls='c3'; 
-        else if(ratio>0.25) cls='c2';
-        
-        const cell = document.createElement('div');
-        cell.className = 'heat-cell '+cls;
-        cell.textContent = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d] + ` • ${Math.round(v/1000)}k`;
-        el.appendChild(cell);
-      }
-    }
-
-    function renderAll(){
-      updateAllWeights();
-      renderHeader(); 
-      renderProgramList(); 
-      renderHeatmap();
-      if(window.heatmapPremiumRefresh) window.heatmapPremiumRefresh();
-    }
-
-    // ============================
-    // GESTION SÉANCES
-    // ============================
-    function openSession(key){
-      currentSessionKey = key;
-      const arr = state.program[key].exercises;
-      const area = document.getElementById('exerciseArea');
-      area.innerHTML = '';
-      
-      const sessionHeader = document.createElement('div');
-      sessionHeader.className = 'card';
-      sessionHeader.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div style="font-weight:800">${state.program[key].title}</div>
-          <div class="exercise-actions">
-            <button class="btn ios" onclick="openAddExerciseModal('${key}')">➕ Ajouter</button>
-            <button class="btn ios danger" onclick="removeSession('${key}')">🗑️ Supprimer</button>
-          </div>
-        </div>
-      `;
-      area.appendChild(sessionHeader);
-      
-      arr.forEach((ex, index)=>{
-        // Gestion rotation biceps
-        let exerciseName = ex.name;
-        if (ex.name === "Spider Curl / Incline Curl*") {
-          exerciseName = getBicepsExercise(state.week);
-        }
-        
-        const exId = sanitizeId(exerciseName);
-        const card = document.createElement('div'); 
-        card.className='exercise-card';
-        const header = document.createElement('div'); 
-        header.className='exercise-header';
-        
-        const currentWeight = calculerCharge(exerciseName, state.week);
-        
-        header.innerHTML = `<div style="flex:1"><div class="exercise-name">${exerciseName}</div>
-          <div class="exercise-meta">${ex.sets}× ${ex.reps} • ${ex.rest}s repos • ${currentWeight}kg</div></div>
-          <div class="exercise-arrow" id="arrow-${exId}">▼</div>`;
-        header.addEventListener('click', ()=> toggleDetails(ex));
-        const details = document.createElement('div'); 
-        details.className='exercise-details'; 
-        details.id='details-'+exId;
-        card.appendChild(header); 
-        card.appendChild(details);
-        area.appendChild(card);
-      });
-      window.scrollTo({top:0,behavior:'smooth'});
-      showQuick('Séance ouverte');
-    }
-
-    function toggleDetails(ex){
-      let exerciseName = ex.name;
-      if (ex.name === "Spider Curl / Incline Curl*") {
-        exerciseName = getBicepsExercise(state.week);
-      }
-      
-      const exId = sanitizeId(exerciseName);
-      const details = document.getElementById('details-'+exId);
-      const arrow = document.getElementById('arrow-'+exId);
-      if(!details) return;
-      
-      const isOpen = details.classList.contains('open');
-      document.querySelectorAll('.exercise-details.open').forEach(d=>{
-        if(d!==details) { 
-          d.classList.remove('open'); 
-          d.innerHTML=''; 
-          const aid = d.id.replace('details-',''); 
-          const ar = document.getElementById('arrow-'+aid); 
-          if(ar) ar.classList.remove('open'); 
-        }
-      });
-      
-      if(isOpen){ 
-        details.classList.remove('open'); 
-        details.innerHTML=''; 
-        if(arrow) arrow.classList.remove('open'); 
-        return; 
-      }
-      
-      renderExerciseDetails(ex);
-      details.classList.add('open');
-      if(arrow) arrow.classList.add('open');
-    }
-
-    function renderExerciseDetails(ex){
-      let exerciseName = ex.name;
-      if (ex.name === "Spider Curl / Incline Curl*") {
-        exerciseName = getBicepsExercise(state.week);
-      }
-      
-      const exId = sanitizeId(exerciseName);
-      const details = document.getElementById('details-'+exId);
-      if(!details) return;
-      
-      const w = calculerCharge(exerciseName, state.week);
-      const last = (state.hist[exerciseName] && state.hist[exerciseName].length) ? 
-        state.hist[exerciseName][state.hist[exerciseName].length-1] : null;
-      
-      let perfHtml = '';
-      if(last) {
-        perfHtml = `<div style="background:rgba(16,185,129,0.08);padding:10px;border-radius:8px;border:1px solid rgba(16,185,129,0.12);margin-bottom:10px">Dernière: ${last.weight}kg × ${last.reps} reps (Semaine ${last.week})</div>`;
-      } else {
-        perfHtml = `<div style="background:rgba(245,158,11,0.06);padding:10px;border-radius:8px;border:1px solid rgba(245,158,11,0.08);margin-bottom:10px">Première fois pour cet exercice</div>`;
-      }
-
-      const mm = MUSCLE_MAPPING[exerciseName] || {primary:[],secondary:[],tertiary:[]};
-      let muscleHtml = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">';
-      mm.primary.forEach(m=> muscleHtml += `<span class="muscle-tag" style="background:rgba(245,158,11,0.22);color:var(--accent)">${m}</span>`);
-      mm.secondary.forEach(m=> muscleHtml += `<span class="muscle-tag" style="background:rgba(59,130,246,0.12);color:#60a5fa">${m}</span>`);
-      mm.tertiary.forEach(m=> muscleHtml += `<span class="muscle-tag" style="background:rgba(139,92,246,0.08);color:#b794f4">${m}</span>`);
-      muscleHtml += '</div>';
-
-      let setsHtml = '';
-      for(let i=1;i<=ex.sets;i++){
-        setsHtml += `<div class="set-row">
-          <div class="set-label" style="font-size:12px;color:var(--muted)">Série ${i}</div>
-          <div><input class="set-input w-${exId}-${i}" type="number" step="0.5" value="${w}" placeholder="KG"></div>
-          <div><input class="set-input r-${exId}-${i}" type="number" value="${(typeof ex.reps==='number')?ex.reps:parseInt(String(ex.reps).split('-')[0])}" placeholder="REPS"></div>
-          <div><input id="s-${i}-${exId}" class="set-checkbox" type="checkbox"><label for="s-${i}-${exId}">✓</label></div>
-        </div>`;
-      }
-
-      const techniqueDetails = getTechniqueDetails(exerciseName, state.week);
-      
-      details.innerHTML = `<div class="technique-banner">✨ ${techniqueDetails}</div>
-        ${perfHtml}
-        ${muscleHtml}
-        ${setsHtml}
-        <div class="exercise-actions">
-          <button class="btn ios" onclick="openModifyWeight('${encodeURIComponent(exerciseName)}')">✏️ Poids</button>
-          <button class="btn ios primary" onclick="savePerf('${encodeURIComponent(exerciseName)}')">💾 Enregistrer</button>
-          <button class="btn ios danger" onclick="removeExerciseFromSession('${encodeURIComponent(exerciseName)}')">🗑️ Retirer</button>
-        </div>`;
-
-      const checkboxes = details.querySelectorAll('.set-checkbox');
-      checkboxes.forEach((cb, idx)=>{
-        cb.addEventListener('change', function(){
-          if(this.checked){
-            if(navigator.vibrate) navigator.vibrate(50);
-            const isLast = idx === checkboxes.length - 1;
-            const nextText = isLast ? 'Prochain exercice' : 'Repos';
-            startRestCountdown(ex.rest, nextText);
-          }
-        });
-      });
-    }
-
-    // ============================
-    // SUITE DU CODE EXISTANT...
-    // (Les autres fonctions restent inchangées mais bénéficient du nouveau système)
-    
-    // Le reste du code JavaScript existant reste identique mais utilise maintenant
-    // le système de progression automatique et les techniques par bloc
-  </script>
-</body>
+// --- BUNDLED SCRIPT END ---
+    </script>
+  </body>
 </html>
